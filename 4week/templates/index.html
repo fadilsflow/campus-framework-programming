@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flask SQLAlchemy CRUD Test</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .form-section {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+      }
+
+      .form-section h2 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #555;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e1e5e9;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #4facfe;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: transform 0.2s;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+      }
+
+      .btn-warning {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+
+      .btn-info {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+
+      .users-section {
+        margin-top: 30px;
+      }
+
+      .users-section h2 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+      }
+
+      .user-card {
+        background: white;
+        border: 2px solid #e1e5e9;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        transition: all 0.3s;
+      }
+
+      .user-card:hover {
+        border-color: #4facfe;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .user-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .user-details h3 {
+        color: #333;
+        margin-bottom: 5px;
+      }
+
+      .user-details p {
+        color: #666;
+        margin-bottom: 3px;
+      }
+
+      .user-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .btn-small {
+        padding: 8px 15px;
+        font-size: 14px;
+      }
+
+      .message {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      .message.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .message.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .user-info {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .user-actions {
+          margin-top: 15px;
+          width: 100%;
+        }
+
+        .btn {
+          flex: 1;
+          margin-right: 5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🚀 Flask SQLAlchemy CRUD</h1>
+        <p>Test your database operations with this interactive frontend</p>
+      </div>
+
+      <div class="content">
+        <!-- Message Area -->
+        <div id="messageArea"></div>
+
+        <!-- Create/Update Form -->
+        <div class="form-section">
+          <h2 id="formTitle">➕ Create New User</h2>
+          <form id="userForm">
+            <div class="form-group">
+              <label for="userName">Name:</label>
+              <input type="text" id="userName" name="name" required />
+            </div>
+            <div class="form-group">
+              <label for="userEmail">Email:</label>
+              <input type="email" id="userEmail" name="email" required />
+            </div>
+            <button type="submit" class="btn btn-success" id="submitBtn">
+              Create User
+            </button>
+            <button
+              type="button"
+              class="btn btn-warning"
+              id="cancelBtn"
+              onclick="cancelEdit()"
+              style="display: none"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+
+        <!-- Users List -->
+        <div class="users-section">
+          <h2>👥 Users List</h2>
+          <button class="btn btn-info" onclick="loadUsers()">🔄 Refresh</button>
+          <div id="usersList">
+            <div class="loading">Loading users...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE = "http://localhost:5000";
+      let editingUserId = null;
+
+      // Load users when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        loadUsers();
+      });
+
+      // Form submission
+      document
+        .getElementById("userForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          const userData = {
+            name: formData.get("name"),
+            email: formData.get("email"),
+          };
+
+          if (editingUserId) {
+            updateUser(editingUserId, userData);
+          } else {
+            createUser(userData);
+          }
+        });
+
+      // Show message
+      function showMessage(message, type = "success") {
+        const messageArea = document.getElementById("messageArea");
+        messageArea.innerHTML = `<div class="message ${type}">${message}</div>`;
+        setTimeout(() => {
+          messageArea.innerHTML = "";
+        }, 5000);
+      }
+
+      // Load all users
+      async function loadUsers() {
+        try {
+          const response = await fetch(`${API_BASE}/users`);
+          const data = await response.json();
+
+          if (response.ok) {
+            displayUsers(data.users);
+          } else {
+            showMessage(`Error: ${data.error}`, "error");
+          }
+        } catch (error) {
+          showMessage(`Network Error: ${error.message}`, "error");
+        }
+      }
+
+      // Display users
+      function displayUsers(users) {
+        const usersList = document.getElementById("usersList");
+
+        if (users.length === 0) {
+          usersList.innerHTML =
+            '<div class="loading">No users found. Create your first user!</div>';
+          return;
+        }
+
+        usersList.innerHTML = users
+          .map(
+            (user) => `
+                <div class="user-card">
+                    <div class="user-info">
+                        <div class="user-details">
+                            <h3>${user.name}</h3>
+                            <p><strong>Email:</strong> ${user.email}</p>
+                            <p><strong>ID:</strong> ${user.id}</p>
+                            <p><strong>Created:</strong> ${new Date(
+                              user.created_at
+                            ).toLocaleString()}</p>
+                        </div>
+                        <div class="user-actions">
+                            <button class="btn btn-warning btn-small" onclick="editUser(${
+                              user.id
+                            }, '${user.name}', '${
+              user.email
+            }')">✏️ Edit</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteUser(${
+                              user.id
+                            }, '${user.name}')">🗑️ Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      // Create user
+      async function createUser(userData) {
+        try {
+          const response = await fetch(`${API_BASE}/users`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userData),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage(`✅ ${data.message}`);
+            document.getElementById("userForm").reset();
+            loadUsers();
+          } else {
+            showMessage(`❌ Error: ${data.error}`, "error");
+          }
+        } catch (error) {
+          showMessage(`❌ Network Error: ${error.message}`, "error");
+        }
+      }
+
+      // Edit user
+      function editUser(id, name, email) {
+        editingUserId = id;
+        document.getElementById("userName").value = name;
+        document.getElementById("userEmail").value = email;
+        document.getElementById("formTitle").textContent = "✏️ Edit User";
+        document.getElementById("submitBtn").textContent = "Update User";
+        document.getElementById("cancelBtn").style.display = "inline-block";
+      }
+
+      // Cancel edit
+      function cancelEdit() {
+        editingUserId = null;
+        document.getElementById("userForm").reset();
+        document.getElementById("formTitle").textContent = "➕ Create New User";
+        document.getElementById("submitBtn").textContent = "Create User";
+        document.getElementById("cancelBtn").style.display = "none";
+      }
+
+      // Update user
+      async function updateUser(id, userData) {
+        try {
+          const response = await fetch(`${API_BASE}/users/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userData),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage(`✅ ${data.message}`);
+            cancelEdit();
+            loadUsers();
+          } else {
+            showMessage(`❌ Error: ${data.error}`, "error");
+          }
+        } catch (error) {
+          showMessage(`❌ Network Error: ${error.message}`, "error");
+        }
+      }
+
+      // Delete user
+      async function deleteUser(id, name) {
+        if (!confirm(`Are you sure you want to delete user "${name}"?`)) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE}/users/${id}`, {
+            method: "DELETE",
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage(`✅ ${data.message}`);
+            loadUsers();
+          } else {
+            showMessage(`❌ Error: ${data.error}`, "error");
+          }
+        } catch (error) {
+          showMessage(`❌ Network Error: ${error.message}`, "error");
+        }
+      }
+    </script>
+  </body>
+</html>
