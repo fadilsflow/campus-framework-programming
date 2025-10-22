@@ -13,7 +13,7 @@ CORS(app)
 # Konfigurasi Database
 # Menggunakan MySQL dengan konfigurasi yang fleksibel
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-    'DATABASE_URL', 
+    'DATABASE_URL',
     'mysql+pymysql://root:root@localhost:8889/flask-week-4'
 )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -27,10 +27,10 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
+
     def __repr__(self):
         return f'<User {self.name}>'
-    
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -46,30 +46,30 @@ class User(db.Model):
 def create_user():
     try:
         data = request.get_json()
-        
+
         # Validasi input
         if not data or not data.get('name') or not data.get('email'):
             return jsonify({'error': 'Name dan email harus diisi'}), 400
-        
+
         # Cek apakah email sudah ada
         existing_user = User.query.filter_by(email=data['email']).first()
         if existing_user:
             return jsonify({'error': 'Email sudah terdaftar'}), 400
-        
+
         # Buat user baru
         new_user = User(
             name=data['name'],
             email=data['email']
         )
-        
+
         db.session.add(new_user)
         db.session.commit()
-        
+
         return jsonify({
             'message': 'User berhasil dibuat',
             'user': new_user.to_dict()
         }), 201
-        
+
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -101,7 +101,7 @@ def update_user(user_id):
     try:
         user = User.query.get_or_404(user_id)
         data = request.get_json()
-        
+
         # Update field yang ada
         if 'name' in data:
             user.name = data['name']
@@ -114,14 +114,14 @@ def update_user(user_id):
             if existing_user:
                 return jsonify({'error': 'Email sudah digunakan user lain'}), 400
             user.email = data['email']
-        
+
         db.session.commit()
-        
+
         return jsonify({
             'message': 'User berhasil diupdate',
             'user': user.to_dict()
         })
-        
+
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -133,9 +133,9 @@ def delete_user(user_id):
         user = User.query.get_or_404(user_id)
         db.session.delete(user)
         db.session.commit()
-        
+
         return jsonify({'message': 'User berhasil dihapus'})
-        
+
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -169,5 +169,5 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         print("Database initialized!")
-    
+
     app.run(debug=True, host='0.0.0.0', port=5000)
