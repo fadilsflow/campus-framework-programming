@@ -5,7 +5,8 @@ from datetime import datetime
 import os
 
 # Inisialisasi Flask app
-app = Flask(__name__)
+app = Flask(__name__) 
+
 
 # Enable CORS untuk frontend
 CORS(app)
