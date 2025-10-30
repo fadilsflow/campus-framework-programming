@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Courses - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="p-6">
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Courses Management</h1>
+        <p class="text-gray-600 mt-2">Manage all courses and curriculum</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Web Development</h3>
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">Learn modern web development with HTML, CSS, and JavaScript</p>
+            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                <span>120 students</span>
+                <span>12 weeks</span>
+            </div>
+            <div class="flex space-x-2">
+                <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-sm">
+                    Edit Course
+                </button>
+                <button class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-sm">
+                    View
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Python Programming</h3>
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">Master Python programming from basics to advanced concepts</p>
+            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                <span>85 students</span>
+                <span>10 weeks</span>
+            </div>
+            <div class="flex space-x-2">
+                <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-sm">
+                    Edit Course
+                </button>
+                <button class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-sm">
+                    View
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Database Design</h3>
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Draft</span>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">Learn database design principles and SQL</p>
+            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                <span>0 students</span>
+                <span>8 weeks</span>
+            </div>
+            <div class="flex space-x-2">
+                <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-sm">
+                    Edit Course
+                </button>
+                <button class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-sm">
+                    View
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-8">
+        <button class="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition-colors">
+            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Create New Course
+        </button>
+    </div>
+</div>
+{% endblock %}

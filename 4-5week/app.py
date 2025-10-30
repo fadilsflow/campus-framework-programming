@@ -29,12 +29,12 @@ def create_app():
     from controllers.user_controller import create_user, get_users, get_user, update_user, delete_user
     
     # API Routes
-    app.add_url_rule('/api/users', 'api_create_user', create_user, methods=['POST'])
+    app.add_url_rule('/api/users', 'api_create_user', create_user , methods=['POST'])
     app.add_url_rule('/api/users', 'api_get_users', get_users, methods=['GET'])
     app.add_url_rule('/api/users/<int:user_id>', 'api_get_user', get_user, methods=['GET'])
     app.add_url_rule('/api/users/<int:user_id>', 'api_update_user', update_user, methods=['PUT'])
     app.add_url_rule('/api/users/<int:user_id>', 'api_delete_user', delete_user, methods=['DELETE'])
-    
+
     # API Info endpoint
     @app.route('/api')
     def api_info():

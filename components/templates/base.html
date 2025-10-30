@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Campus Framework Programming{% endblock %}</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100">
+    {% include 'navbar.html' %}
+    <div class="flex">
+        {% if request.endpoint and request.endpoint.startswith('admin') %}
+            {% include 'sidebar.html' %}
+        {% endif %}
+        <main class="flex-1 {% if request.endpoint and request.endpoint.startswith('admin') %}ml-0{% else %}container mx-auto px-4 py-8{% endif %}">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>
